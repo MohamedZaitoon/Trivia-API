@@ -150,8 +150,8 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_next_question(self):
         res = self.client().post('/quizzes', json={
-            'previous_questions':[],
-            'quiz_category': {'id':0, 'type':"All"}
+            "previous_questions":[],
+            "quiz_category": {"id":0, "type":"All"}
             })
         data = json.loads(res.data)
 

@@ -70,9 +70,7 @@ def create_app(test_config=None):
   @app.route("/questions")
   def get_questions():
     categories =  get_all_categories()
-    first_cat_key = list(categories.keys())[0]
-
-    questions = Question.query.filter(Question.category == first_cat_key).order_by(Question.difficulty).all()
+    questions = Question.query.order_by(Question.difficulty).all()
     page_questions = paginate_question(request, questions)
 
     if len(page_questions) < 1:
@@ -82,7 +80,7 @@ def create_app(test_config=None):
       "questions": page_questions,
       "total_questions": len(questions),
       "categories": categories,
-      "current_category": first_cat_key
+      "current_category": ALL_CATEGORY
       })
 
   '''
@@ -134,7 +132,7 @@ def create_app(test_config=None):
           return jsonify({
             'questions':page_qestions,
             'total_questions':len(questions),
-            'current_category': 1
+            'current_category': 0
             })
       else: 
         new_question = req_body['question']
