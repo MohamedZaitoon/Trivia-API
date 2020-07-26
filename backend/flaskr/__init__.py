@@ -82,7 +82,7 @@ def create_app(test_config=None):
       "questions": page_questions,
       "total_questions": len(questions),
       "categories": categories,
-      "current_category": categories[first_cat_key]
+      "current_category": first_cat_key
       })
 
   '''
@@ -96,9 +96,6 @@ def create_app(test_config=None):
     question = Question.query.get(question_id)
 
     try:
-      if question == None:
-        abort(404)
-
       question.delete()
       return jsonify({
         "success":True
@@ -121,9 +118,7 @@ def create_app(test_config=None):
     try:
       req_body = request.get_json()
       search = req_body.get('searchTerm', None)
-      print(search)
       if search :
-
           questions = Question.query.filter(Question.question.ilike(f'%{search}%'))\
             .order_by(Question.difficulty).all()
           page_qestions = paginate_question(request, questions)
@@ -132,7 +127,6 @@ def create_app(test_config=None):
             'total_questions':len(questions),
             'current_category': 1
             })
-
       else: 
         new_question = req_body['question']
         new_answer = req_body['answer']
@@ -144,8 +138,8 @@ def create_app(test_config=None):
           "success":True
           })
     except Exception as e:
-      print(str(e))
-      abort(422)
+          print(str(e))
+          abort(422)
 
 
   '''
@@ -169,7 +163,6 @@ def create_app(test_config=None):
   def get_category_by_id(category_id):
     questions = Question.query.filter(Question.category == category_id).order_by(Question.difficulty).all()
     page_questions = paginate_question(request, questions)
-    print(page_questions)
 
     if len(page_questions) < 1:
       abort(404)
@@ -194,7 +187,6 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=['POST'])
   def get_next_question():
     body = request.get_json()
-    print(body)
     previous_questions = body['previous_questions']
     category_id = body['quiz_category']['id']
     questions = None
@@ -203,14 +195,16 @@ def create_app(test_config=None):
     else:
       questions = Question.query.order_by(Question.difficulty).all()
 
+    if len(questions) < 1:
+      abort(404)
+
     question = None
     no_question = len(previous_questions)
 
     if no_question < 1:
       question = questions[0].format()
     elif no_question < len(questions):
-      print(questions[no_question+1])
-      question = questions[no_question+1].format()
+      question = questions[no_question].format()
     else:
       question = None
 
@@ -228,7 +222,7 @@ def create_app(test_config=None):
     return jsonify({
         'success':False,
         'error':404,
-        'message':'Not found'
+        'message':'Resource not found'
     }), 404
 
   @app.errorhandler(422)
@@ -238,6 +232,14 @@ def create_app(test_config=None):
         'error':422,
         'message':'Unprocessable entity'
     }), 422
+  
+  @app.errorhandler(405)
+  def unprocessable(error):
+    return jsonify({
+        'success':False,
+        'error':405,
+        'message':'Method not allowed'
+    }), 405
   
   return app
 
