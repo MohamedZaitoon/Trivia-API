@@ -112,6 +112,15 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+  '''
+  @TODO: Create a POST endpoint to get questions based on a search term. 
+  It should return any questions for whom the search term 
+  is a substring of the question. 
+
+  TEST: Search by any phrase. The questions list will update to include 
+  only question that include that string within their question. 
+  Try using the word "title" to start. 
+  '''
   @app.route("/questions", methods=['POST'])
   def create_search_question():
     
@@ -141,16 +150,6 @@ def create_app(test_config=None):
           print(str(e))
           abort(422)
 
-
-  '''
-  @TODO: Create a POST endpoint to get questions based on a search term. 
-  It should return any questions for whom the search term 
-  is a substring of the question. 
-
-  TEST: Search by any phrase. The questions list will update to include 
-  only question that include that string within their question. 
-  Try using the word "title" to start. 
-  '''
 
   '''
   @TODO: Create a GET endpoint to get questions based on category. 
