@@ -67,10 +67,10 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Resource not found')
 
     def test_delete_question(self):
-        res = self.client().delete("/questions/29")
+        res = self.client().delete("/questions/4")
         data = json.loads(res.data)
 
-        question = Question.query.get(29)
+        question = Question.query.get(4)
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
@@ -108,7 +108,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(len(data['questions']))
         self.assertTrue(data['total_questions'])
-        self.assertTrue(data['current_category'])
     
 
     def test_search_for_not_exist_question(self):
@@ -118,7 +117,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(len(data['questions']), 0)
         self.assertEqual(data['total_questions'], 0)
-        self.assertTrue(data['current_category'])
     
 
     def test_405_not_allowed_search_for_question(self):
